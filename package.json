@@ -1,0 +1,67 @@
+{
+  "name": "billing-websocket-chat-api",
+  "version": "2.0.17",
+  "description": "",
+  "author": "thecozyhub",
+  "license": "MIT",
+  "repository": "",
+  "engines": {
+    "node": ">=9",
+    "npm": ">=6"
+  },
+  "keywords": [],
+  "scripts": {
+    "test": "jest",
+    "build": "babel ./src/ -d ./dist -s",
+    "start": "npm run build && node dist/index.js",
+    "prettier-check": "prettier --check '*.js'"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.5.5",
+    "@babel/core": "7.5.5",
+    "@babel/preset-env": "7.4.5",
+    "@babel/node": "7.5.5",
+    "babel-eslint": "8.2.5",
+    "babel-loader": "8.0.6",
+    "babel-jest": "24.8.0",
+    "cross-env": "5.1.4",
+    "eslint": "5.16.0",
+    "eslint-config-airbnb": "17.1.0",
+    "eslint-config-prettier": "3.6.0",
+    "eslint-config-standard": "11.0.0",
+    "eslint-config-standard-react": "6.0.0",
+    "eslint-plugin-import": "2.17.3",
+    "eslint-plugin-jsx-a11y": "6.2.1",
+    "eslint-plugin-node": "7.0.1",
+    "eslint-plugin-prettier": "3.1.0",
+    "eslint-plugin-promise": "4.1.1",
+    "eslint-plugin-react": "7.13.0",
+    "eslint-plugin-react-hooks": "1.6.0",
+    "eslint-plugin-standard": "3.1.0",
+    "extend-shallow": "3.0.2",
+    "husky": "3.0.4",
+    "jest": "24.8.0",
+    "jest-css-modules": "2.1.0",
+    "lint-staged": "9.2.3",
+    "prettier": "1.18.2",
+    "prettier-eslint": "9.0.0",
+    "prettier-eslint-cli": "5.0.0",
+    "prop-types": "15.7.2"
+  },
+  "files": [
+    "dist"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --ext .js --fix",
+      "prettier --write '*.js'",
+      "git add"
+    ]
+  },
+  "dependencies": {}
+}
