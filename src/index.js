@@ -1,23 +1,42 @@
 import WebSocket from 'ws';
 import http from 'http';
-// import { addMessage, createNewConversation, getAllMessages } from './messages';
-//const url = 'ws://localhost:8080'
+import { getAllMessagesForClient, getAllMessagesForUser } from './messages';
 
 const server = http.createServer();
 const PORT = 8080;
 
 const wss = new WebSocket.Server({ server });
 
+const sendMessage = (ws, data) => {
+  const result = JSON.stringify(data);
+  console.log(`SENDING ${result}`);
+  ws.send(result);
+};
+
+const getMessage = (msg) => {
+  console.log(`RECEIVED ${msg}`);
+  const parsedMessage = JSON.parse(msg);
+  return parsedMessage;
+};
+
 wss.on('connection', (ws, req) => {
-  console.log(req.connection.remoteAddress);
+  console.log('we are connected!!!');
 
-  ws.on('message', (message) => {
-    console.log('RECEIVED: %s', message);
+  ws.on('message', (msg) => {
+    if (msg) {
+      const parseMessage = getMessage(msg);
+
+      if (parseMessage.name == 'CONNECT-ACCOUNT') {
+        sendMessage(ws, getAllMessagesForUser(parseMessage.message));
+      }
+
+      if (parseMessage.name == 'GET-ALL-MESSAGES-CLIENT') {
+        sendMessage(ws, getAllMessagesForClient(parseMessage.message));
+      }
+    }
   });
-
-  ws.send('CONNECTED');
 });
 
 server.listen(PORT);
 
-console.log(`listening port ${PORT}, ws://localhost:8080`);
+console.log(`listening ws://localhost:8080`);

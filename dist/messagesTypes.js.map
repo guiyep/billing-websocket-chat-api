@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/messagesTypes.js"],"names":["types","user","client","link"],"mappings":";;;;;;AAAA,IAAMA,KAAK,GAAG;AACZC,EAAAA,IAAI,EAAE,MADM;AAEZC,EAAAA,MAAM,EAAE,QAFI;AAGZC,EAAAA,IAAI,EAAE;AAHM,CAAd;eAMeH,K","sourcesContent":["const types = {\n  user: 'USER',\n  client: 'CLIENT',\n  link: 'LINK',\n};\n\nexport default types;\n"],"file":"messagesTypes.js"}
