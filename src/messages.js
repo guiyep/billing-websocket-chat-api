@@ -10,10 +10,12 @@ const data = {
     {
       message: 'this is a user message',
       type: messageTypes.user,
+      accountName: 'SOME Account 1',
     },
     {
-      message: 'this is a user message',
+      message: 'this is a client message',
       type: messageTypes.client,
+      accountName: 'SOME Account 2',
     },
   ],
 };
@@ -31,4 +33,13 @@ export const getAllMessagesForUser = (accountId) => {
 };
 
 export const getAllMessagesForClient = () =>
-  Object.entries(data).map(([accountId, messages]) => ({ accountId, messages }));
+  Object.entries(data).reduce((acc, [accountId, messages]) => {
+    acc.push(
+      ...messages.map((message) => ({
+        accountId,
+        ...message,
+      })),
+    );
+
+    return acc;
+  }, []);
