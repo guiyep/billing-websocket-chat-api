@@ -1,37 +1,57 @@
 import WebSocket from 'ws';
 import http from 'http';
-import { getAllMessagesForClient, getAllMessagesForUser } from './messages';
+import { addMessage, getAllMessagesForClient, getAllMessagesForUser } from './messages';
+import messageTypes from './messagesTypes';
 
 const server = http.createServer();
 const PORT = 8080;
 
 const wss = new WebSocket.Server({ server });
 
-const sendMessage = (ws, data) => {
-  const result = JSON.stringify(data);
-  console.log(`SENDING ${result}`);
+const sendMessage = (ws, data, accountId, name) => {
+  const result = JSON.stringify({ accountId, name, data });
+  console.log(`SENDING - ${result}`);
   ws.send(result);
 };
 
 const getMessage = (msg) => {
-  console.log(`RECEIVED ${msg}`);
+  console.log(`RECEIVED - ${msg}`);
   const parsedMessage = JSON.parse(msg);
   return parsedMessage;
 };
 
-wss.on('connection', (ws, req) => {
-  console.log('we are connected!!!');
+const broadcastMessage = (ws, data, accountId, name) => {
+  wss.clients.forEach((client) => {
+    if (client !== ws && client.readyState === WebSocket.OPEN) {
+      console.log(`BROADCASTING - messaging to ${accountId} ${name}`);
+      sendMessage(client, data, accountId, name);
+    }
+  });
+};
+
+wss.on('connection', (ws) => {
+  console.log('CONNECTION - Someone is connected to the WEBSOCKET');
 
   ws.on('message', (msg) => {
     if (msg) {
       const parseMessage = getMessage(msg);
 
       if (parseMessage.name == 'CONNECT-ACCOUNT') {
-        sendMessage(ws, getAllMessagesForUser(parseMessage.message));
+        const accountId = parseMessage.message;
+        sendMessage(ws, getAllMessagesForUser(accountId), accountId, messageTypes.user);
       }
 
       if (parseMessage.name == 'GET-ALL-MESSAGES-CLIENT') {
-        sendMessage(ws, getAllMessagesForClient(parseMessage.message));
+        sendMessage(ws, getAllMessagesForClient(), '', messageTypes.client);
+      }
+
+      if (parseMessage.name == 'ADD-MESSAGE') {
+        const accountId = parseMessage.message.accountId;
+        const messageAdded = addMessage(accountId, parseMessage);
+        broadcastMessage(ws, messageAdded, accountId, 'NEW-MESSAGE-ADDED');
+        if (parseMessage.type === messageTypes.client) {
+          sendMessage(ws, getAllMessagesForClient(), messageTypes.client);
+        }
       }
     }
   });

@@ -20,9 +20,20 @@ const data = {
   ],
 };
 
-export const addMessage = () => {};
+export const addMessage = (accountId, message) => {
+  if (!message.message || !message.type || !message.accountName) {
+    console.log('ERROR - Invalid message');
+  }
 
-export const createNewConversation = () => {};
+  if (!data[accountId]) {
+    data[accountId] = [];
+  }
+
+  data[accountId].push(message);
+  return message;
+};
+
+// export const createNewConversation = () => {};
 
 export const getAllMessagesForUser = (accountId) => {
   if (!data[accountId]) {
@@ -32,8 +43,9 @@ export const getAllMessagesForUser = (accountId) => {
   return data[accountId].concat(endOfConversationMessage);
 };
 
-export const getAllMessagesForClient = () =>
-  Object.entries(data).reduce((acc, [accountId, messages]) => {
+export const getAllMessagesForClient = () => {
+  console.log(`UPDATED: new messages collection ${JSON.stringify(data)}`);
+  return Object.entries(data).reduce((acc, [accountId, messages]) => {
     acc.push(
       ...messages.map((message) => ({
         accountId,
@@ -43,3 +55,4 @@ export const getAllMessagesForClient = () =>
 
     return acc;
   }, []);
+};

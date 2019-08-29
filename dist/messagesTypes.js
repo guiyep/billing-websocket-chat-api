@@ -1,12 +1,14 @@
-Object.defineProperty(exports, '__esModule', {
-  value: true,
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
-exports.default = void 0;
-const types = {
+exports["default"] = void 0;
+var types = {
   user: 'USER',
   client: 'CLIENT',
-  link: 'LINK',
+  link: 'LINK'
 };
-const _default = types;
-exports.default = _default;
-// # sourceMappingURL=messagesTypes.js.map
+var _default = types;
+exports["default"] = _default;
+//# sourceMappingURL=messagesTypes.js.map
