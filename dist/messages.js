@@ -107,20 +107,7 @@ const endOfConversationMessage = {
   message: '---- conversation finished ----',
   type: _messagesTypes.default.client,
 };
-const data = {
-  'THIS-IS-AN-ACCOUNT-ID': [
-    {
-      message: 'this is a user message',
-      type: _messagesTypes.default.user,
-      accountName: 'SOME Account 1',
-    },
-    {
-      message: 'this is a client message',
-      type: _messagesTypes.default.client,
-      accountName: 'SOME Account 2',
-    },
-  ],
-};
+const data = {};
 
 const addMessage = function addMessage(accountId, message) {
   if (!message.message || !message.type || !message.accountName) {
@@ -132,11 +119,14 @@ const addMessage = function addMessage(accountId, message) {
   }
 
   if (message.type === _messagesTypes.default.link) {
+    const isLogs = message.typeOfLink === 'LOGS';
+    const isFirmData = message.typeOfLink === 'FIRMDATA';
+    const theMessage = isLogs ? 'Logs received' : isFirmData ? 'Firm info received' : 'Screenshot received';
     data[accountId].push({
       type: message.type,
       accountId: message.accountId,
       accountName: message.accountName,
-      message: 'screenshot received',
+      message: theMessage,
       data: message,
     });
     return message;

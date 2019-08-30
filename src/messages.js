@@ -17,11 +17,16 @@ export const addMessage = (accountId, message) => {
   }
 
   if (message.type === messageTypes.link) {
+    const isLogs = message.typeOfLink === 'LOGS';
+    const isFirmData = message.typeOfLink === 'FIRMDATA';
+
+    const theMessage = isLogs ? 'Logs received' : isFirmData ? 'Firm info received' : 'Screenshot received';
+
     data[accountId].push({
       type: message.type,
       accountId: message.accountId,
       accountName: message.accountName,
-      message: 'screenshot received',
+      message: theMessage,
       data: message,
     });
     return message;

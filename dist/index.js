@@ -60,7 +60,7 @@ wss.on('connection', (ws) => {
       if (parseMessage.name == 'ADD-MESSAGE') {
         const _accountId = parseMessage.accountId;
         const messageAdded = (0, _messages.addMessage)(_accountId, parseMessage);
-        broadcastMessage(ws, messageAdded, _accountId, 'NEW-MESSAGE-ADDED');
+        broadcastMessage(ws, [messageAdded], _accountId, 'NEW-MESSAGE-ADDED');
         broadcastMessage(ws, (0, _messages.getAllMessagesForClient)(), '', 'GET-ALL-MESSAGES-CLIENT-SUCCEEDED', true);
       }
     }
