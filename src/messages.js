@@ -5,20 +5,7 @@ const endOfConversationMessage = {
   type: messageTypes.client,
 };
 
-const data = {
-  'THIS-IS-AN-ACCOUNT-ID': [
-    {
-      message: 'this is a user message',
-      type: messageTypes.user,
-      accountName: 'SOME Account 1',
-    },
-    {
-      message: 'this is a client message',
-      type: messageTypes.client,
-      accountName: 'SOME Account 2',
-    },
-  ],
-};
+const data = {};
 
 export const addMessage = (accountId, message) => {
   if (!message.message || !message.type || !message.accountName) {
@@ -29,7 +16,19 @@ export const addMessage = (accountId, message) => {
     data[accountId] = [];
   }
 
+  if (message.type === messageTypes.link) {
+    data[accountId].push({
+      type: message.type,
+      accountId: message.accountId,
+      accountName: message.accountName,
+      message: 'screenshot received',
+      data: message,
+    });
+    return message;
+  }
+
   data[accountId].push(message);
+  console.log(data);
   return message;
 };
 

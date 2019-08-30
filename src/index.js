@@ -20,9 +20,9 @@ const getMessage = (msg) => {
   return parsedMessage;
 };
 
-const broadcastMessage = (ws, data, accountId, name) => {
+const broadcastMessage = (ws, data, accountId, name, sameOrigin) => {
   wss.clients.forEach((client) => {
-    if (client !== ws && client.readyState === WebSocket.OPEN) {
+    if ((sameOrigin || client !== ws) && client.readyState === WebSocket.OPEN) {
       console.log(`BROADCASTING - messaging to ${accountId} ${name}`);
       sendMessage(client, data, accountId, name);
     }
@@ -38,20 +38,18 @@ wss.on('connection', (ws) => {
 
       if (parseMessage.name == 'CONNECT-ACCOUNT') {
         const accountId = parseMessage.message;
-        sendMessage(ws, getAllMessagesForUser(accountId), accountId, messageTypes.user);
+        sendMessage(ws, getAllMessagesForUser(accountId), accountId, 'ACCOUNT-CONNECTED');
       }
 
       if (parseMessage.name == 'GET-ALL-MESSAGES-CLIENT') {
-        sendMessage(ws, getAllMessagesForClient(), '', messageTypes.client);
+        sendMessage(ws, getAllMessagesForClient(), '', 'GET-ALL-MESSAGES-CLIENT-SUCCEEDED');
       }
 
       if (parseMessage.name == 'ADD-MESSAGE') {
-        const accountId = parseMessage.message.accountId;
+        const accountId = parseMessage.accountId;
         const messageAdded = addMessage(accountId, parseMessage);
         broadcastMessage(ws, messageAdded, accountId, 'NEW-MESSAGE-ADDED');
-        if (parseMessage.type === messageTypes.client) {
-          sendMessage(ws, getAllMessagesForClient(), messageTypes.client);
-        }
+        broadcastMessage(ws, getAllMessagesForClient(), '', 'GET-ALL-MESSAGES-CLIENT-SUCCEEDED', true);
       }
     }
   });
